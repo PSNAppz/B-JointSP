@@ -1,3 +1,5 @@
+import pickle       # Pickle module for loading saved ML model
+import numpy as np
 class Component:
     def __init__(self, name, type, stateful, inputs, outputs, cpu, mem, dr, vnf_delay=0, config=None):
         self.name = name
@@ -75,13 +77,17 @@ class Component:
         inputs = self.inputs + self.inputs_back
         if len(incoming) != inputs:
             raise ValueError("Mismatch of #incoming data rates and inputs")
-
-        requirement = self.cpu[-1]      # idle consumption
+        # load the model from disk
+        loaded_model = pickle.load(open('src/bjointsp/ml_model/linearReg_model.sav', 'rb'))
+        requirement = loaded_model.predict([[0]])      # idle consumption
+        total_load = 0
         if self == ignore_idle:
             requirement = 0
         for i in range(inputs):
-            requirement += self.cpu[i] * incoming[i]    # linear function
-
+            total_load += incoming[i]
+        print("Total",total_load)
+        requirement = loaded_model.predict([[total_load]])   # prediction of cpu requirement using the total load calculated
+        print("Requirement",requirement)
         return requirement
 
     # memory requirement based on the incoming data rates and the specified function
