@@ -79,7 +79,7 @@ class Component:
             raise ValueError("Mismatch of #incoming data rates and inputs")
         # load the model from disk
         model = pickle.load(open('src/bjointsp/ml_model/randomForest_model.sav', 'rb'))
-        requirement = model.predict([[0]]).item()      # idle consumption
+        requirement = 0     # idle consumption
         total_load = 0
         if self == ignore_idle:
             requirement = 0
@@ -91,17 +91,18 @@ class Component:
     # memory requirement based on the incoming data rates and the specified function
     # ignore idle consumption if component specified in ignore_idle
     def mem_req(self, incoming, ignore_idle=None):
-        inputs = self.inputs + self.inputs_back
-        if len(incoming) != inputs:
-            raise ValueError("Mismatch of #incoming data rates and inputs")
+        # inputs = self.inputs + self.inputs_back
+        # if len(incoming) != inputs:
+        #     raise ValueError("Mismatch of #incoming data rates and inputs")
 
-        requirement = self.mem[-1]  # idle consumption
-        if self == ignore_idle:
-            requirement = 0
-        for i in range(inputs):
-            requirement += self.mem[i] * incoming[i]    # linear function
+        # requirement = self.mem[-1]  # idle consumption
+        # if self == ignore_idle:
+        #     requirement = 0
+        # for i in range(inputs):
+        #     requirement += self.mem[i] * incoming[i]    # linear function
 
-        return requirement
+        # return requirement
+        return 0
 
     # outgoing data rate at specified output based on the incoming data rates
     def outgoing(self, in_vector, output):
