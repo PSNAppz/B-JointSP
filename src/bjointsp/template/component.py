@@ -85,7 +85,8 @@ class Component:
             requirement = 0
         for i in range(inputs):
             total_load += incoming[i]
-        requirement = model.predict([[total_load]]).item()   # prediction of cpu requirement using the total load calculated
+        if not self.source:    
+            requirement = model.predict([[total_load]]).item()   # prediction of cpu requirement using the total load calculated
         return requirement
 
     # memory requirement based on the incoming data rates and the specified function
