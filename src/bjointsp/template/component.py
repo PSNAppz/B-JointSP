@@ -78,7 +78,7 @@ class Component:
         if len(incoming) != inputs:
             raise ValueError("Mismatch of #incoming data rates and inputs")
         # load the model from disk
-        model = pickle.load(open('src/bjointsp/ml_model/randomForest_model.sav', 'rb'))
+        model = pickle.load(open('src/bjointsp/ml_model/XGB_model.sav', 'rb'))
         requirement = 0     # idle consumption
         total_load = 0
         if self == ignore_idle:
@@ -86,7 +86,7 @@ class Component:
         for i in range(inputs):
             total_load += incoming[i]
         if not self.source:    
-            requirement = model.predict([[total_load]]).item()   # prediction of cpu requirement using the total load calculated
+            requirement = model.predict([[total_load]]).item()   # prediction of cpu requirement using the total load calculated 
         return requirement
 
     # memory requirement based on the incoming data rates and the specified function
