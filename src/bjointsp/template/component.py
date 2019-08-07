@@ -1,5 +1,8 @@
 import pickle       # Pickle module for loading saved ML model
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.externals import joblib
+
 class Component:
     def __init__(self, name, type, stateful, inputs, outputs, cpu, mem, dr, vnf_delay=0, config=None):
         self.name = name
@@ -71,6 +74,14 @@ class Component:
         print("\tforward: {} in, {} out, data rate: {}".format(self.inputs, self.outputs, self.dr))
         print("\tbackward: {} in, {} out, data rate: {}".format(self.inputs_back, self.outputs_back, self.dr_back))
 
+    # ML Prediction of CPU requirement based on the incoming data rates
+    def predict_cpu_req(data_rate):
+        scaler = joblib.load('src/bjointsp/ml_model/scaler.save') 
+        data_rate = scaler.transform(np.float32([[data_rate]])) 
+        model = pickle.load(open('src/bjointsp/ml_model/XGB_model.sav', 'rb'))
+        #return (2 **(data_rate/100) - 1).item()
+        return model.predict(data_rate).item()
+
     # CPU requirement based on the incoming data rates and the specified function
     # ignore idle consumption if component specified in ignore_idle
     def cpu_req(self, incoming, ignore_idle=None):
@@ -78,15 +89,15 @@ class Component:
         if len(incoming) != inputs:
             raise ValueError("Mismatch of #incoming data rates and inputs")
         # load the model from disk
-        model = pickle.load(open('src/bjointsp/ml_model/randomForest_model.sav', 'rb'))
         requirement = 0     # idle consumption
-        total_load = 0
+        total_load = 0.0
         if self == ignore_idle:
             requirement = 0
         for i in range(inputs):
-            total_load += incoming[i]
-        if not self.source:    
-            requirement = model.predict([[total_load]]).item()   # prediction of cpu requirement using the total load calculated 
+            total_load += np.array(incoming[i])
+        if not self.source: 
+            #return self.cpu[i] * total_load  # Linear function (Original)
+            requirement = Component.predict_cpu_req(total_load)   # prediction of cpu requirement using the total load calculated 
         return requirement
 
     # memory requirement based on the incoming data rates and the specified function
