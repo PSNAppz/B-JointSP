@@ -27,7 +27,7 @@ class Component:
         self.vnf_delay = vnf_delay
         self.dr = dr[0]
         self.dr_back = dr[1]
-        self.config = config		# config used by external apps/MANOs (describes image, ports, ...)
+        self.config = config       # config used by external apps/MANOs (describes image, ports, ...)
 
         total_inputs = self.inputs + self.inputs_back
 
@@ -78,8 +78,7 @@ class Component:
     def predict_cpu_req(data_rate):
         scaler = joblib.load('src/bjointsp/ml_model/scaler.save') 
         data_rate = scaler.transform(np.float32([[data_rate]])) 
-        model = pickle.load(open('src/bjointsp/ml_model/XGB_model.sav', 'rb'))
-        #return (2 **(data_rate/100) - 1).item()
+        model = pickle.load(open('src/bjointsp/ml_model/gradientBoostingReg_model.sav', 'rb'))
         return model.predict(data_rate).item()
 
     # CPU requirement based on the incoming data rates and the specified function
@@ -96,7 +95,8 @@ class Component:
         for i in range(inputs):
             total_load += np.array(incoming[i])
         if not self.source: 
-            #return self.cpu[i] * total_load  # Linear function (Original)
+            #requirement =  (2 **(total_load/100) - 1).item()
+            #requirement = self.cpu[i] * total_load  # Linear function (Original)
             requirement = Component.predict_cpu_req(total_load)   # prediction of cpu requirement using the total load calculated 
         return requirement
 
