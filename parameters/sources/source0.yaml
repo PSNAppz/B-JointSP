@@ -3,3 +3,21 @@
   flows:
     - id: f1
       data_rate: 1
+    - id: f2
+      data_rate: 1
+    - id: f3
+      data_rate: 1
+    - id: f4
+      data_rate: 1
+    - id: f5
+      data_rate: 1   
+    - id: f6
+      data_rate: 1     
+    - id: f7
+      data_rate: 1  
+    - id: f8
+      data_rate: 1  
+    - id: f9
+      data_rate: 1
+    - id: f10
+      data_rate: 1  
