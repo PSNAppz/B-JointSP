@@ -76,9 +76,9 @@ class Component:
 
     # ML Prediction of CPU requirement based on the incoming data rates
     def predict_cpu_req(data_rate):
-        scaler = joblib.load('src/bjointsp/ml_model/syntheticScaler.save') 
+        scaler = joblib.load('src/bjointsp/ml_model/synthetic_models/syntheticScaler.save') 
         data_rate = scaler.transform(np.float32([[data_rate]])) 
-        model = pickle.load(open('src/bjointsp/ml_model/XGB_model.sav', 'rb'))
+        model = pickle.load(open('src/bjointsp/ml_model/synthetic_models/gb_model.sav', 'rb'))
         return model.predict(data_rate).item()
 
     # CPU requirement based on the incoming data rates and the specified function
@@ -95,10 +95,9 @@ class Component:
         for i in range(inputs):
             total_load += np.array(incoming[i])
         if not self.source: 
-            print("TOTAL LOAD:",total_load)
-            #requirement =  (2 **(total_load/100) - 1).item()
+            requirement =  (2 **(total_load/100) - 1).item()
             #requirement = self.cpu[i] * total_load  # Linear function (Original)
-            requirement = Component.predict_cpu_req(total_load)   # prediction of cpu requirement using the total load calculated 
+            #requirement = Component.predict_cpu_req(total_load)   # prediction of cpu requirement using the total load calculated 
         return requirement
 
     # memory requirement based on the incoming data rates and the specified function
