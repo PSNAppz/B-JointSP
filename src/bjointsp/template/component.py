@@ -76,9 +76,9 @@ class Component:
 
     # ML Prediction of CPU requirement based on the incoming data rates
     def predict_cpu_req(data_rate):
-        scaler = joblib.load('src/bjointsp/ml_model/real_models/nginx/syntheticScaler.save') 
+        scaler = joblib.load('src/bjointsp/ml_model/real_models/haproxy/haproxyScaler.save') 
         data_rate = scaler.transform(np.float32([[data_rate]])) 
-        model = pickle.load(open('src/bjointsp/ml_model/real_models/nginx/linear_nginx_small_model.sav', 'rb'))
+        model = pickle.load(open('src/bjointsp/ml_model/real_models/haproxy/linear_haproxy_big_model.sav', 'rb'))
         return model.predict(data_rate).item()
 
     # CPU requirement based on the incoming data rates and the specified function
